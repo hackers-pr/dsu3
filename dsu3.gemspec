@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require './lib/dsu3'
+
 Gem::Specification.new do |s|
   s.name = 'dsu3'
-  s.version = DSU3::Version
+  s.version = DSU3::VERSION
   s.summary = 'a simple library for working with discord selfbots'
   s.files = Dir['lib/*', 'lib/**/*']
   s.extra_rdoc_files = ['README.md']
