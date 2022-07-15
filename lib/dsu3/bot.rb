@@ -7,10 +7,16 @@ module DSU3
   class Bot
     API_BASE = 'https://discord.com/api/v9'
 
+    # @param [Hash] headers
     def initialize(headers)
       @headers = headers
     end
 
+    # Makes an API request, includes simple rate limit handling
+    # @param [Symbol, String] method 
+    # @param [String] endpoint Discord API endpoint
+    # @param [Hash] headers Additional request headers
+    # @param [String] payload
     def request(method, endpoint, headers = {}, payload = nil)
       args = {
         method: method,

