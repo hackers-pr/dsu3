@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.homepage = 'https://rubygems.org/gems/dsu3'
   s.metadata = {
     'source_code_uri' => 'https://github.com/hackers-pr/dsu3',
-    'bug_tracker_uri' => 'https://github.com/hackers-pr/dsu3/issues',
+    'bug_tracker_uri' => 'https://github.com/hackers-pr/dsu3/issues'
   }
   s.required_ruby_version = '>= 2.0.0'
 
