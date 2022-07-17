@@ -12,11 +12,10 @@ module DSU3
       @bots = tokens.map { |token| Bot.new(headers.merge(authorization: token)) }
     end
 
-    # Infinitely writes to a particular channel
-    # @param [String, Integer] channel Channel ID
+    # (see Bot#type)
     def typespam(channel)
       loop do
-        @bots.each { |bot| bot.request(:post, "channels/#{channel}/typing") }
+        @bots.each(&:type)
         sleep 9
       end
     end
@@ -38,6 +37,11 @@ module DSU3
         bot.join(invite)
         sleep(0.5)
       end
+    end
+
+    # (see Bot#react)
+    def react(channel, message, emoji)
+      @bots.each { |bot| bot.react(channel, message, emoji) }
     end
   end
 end

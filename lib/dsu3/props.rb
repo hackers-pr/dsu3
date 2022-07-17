@@ -40,7 +40,8 @@ module DSU3
       x_debug_options: 'bugReporterEnabled',
       x_discord_locale: 'en-US',
       x_super_properties: Base64.strict_encode64(SUPER_PROPERTIES.to_json),
-      content_type: 'application/json'
+      content_type: 'application/json',
+      origin: 'https://discord.com'
     }.freeze
 
     # Gets the headers necessary for normal interaction with the Discord API

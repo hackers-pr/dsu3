@@ -29,11 +29,25 @@ module DSU3
 
       begin
         RestClient::Request.execute(args)
-      rescue RestClient::TooManyRequests => e
-        LOGGER.warn('rate limit exceeded')
-        sleep(JSON.parse(e.response)['retry_after'] / 1000.0)
-        retry
+      rescue RestClient::ExceptionWithResponse => e
+        data = JSON.parse(e.response)
+
+        if e.is_a?(RestClient::TooManyRequests)
+          retry_after = data['retry_after'] / 1000.0
+
+          LOGGER.warn("rate limit exceeded, waiting #{retry_after} seconds")
+          sleep(retry_after)
+          retry
+        else
+          LOGGER.error("#{data['code']}: #{data['message']}")
+        end
       end
+    end
+
+    # Types text into a particular channel
+    # @param [String, Integer] channel Channel ID
+    def type(channel)
+      request(:post, "channels/#{channel}/typing")
     end
 
     # Sends a message to a specific channel
@@ -53,6 +67,21 @@ module DSU3
         :post, "invites/#{invite}",
         { x_context_properties: 'eyJsb2NhdGlvbiI6Ik1hcmtkb3duIExpbmsifQ==' },
         '{}'
+      )
+    end
+
+    # Reacts to a message
+    # @note To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id
+    # @param [String, Integer] channel Channel ID
+    # @param [String, Integer] message Message ID
+    # @param [String] emoji
+    def react(channel, message, emoji)
+      emoji = URI.encode_www_form_component(emoji)
+
+      request(
+        :put,
+        "channels/#{channel}/messages/#{message}/reactions/#{emoji}/@me",
+        {params: {location: 'Message'}}
       )
     end
   end
