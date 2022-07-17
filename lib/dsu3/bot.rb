@@ -81,7 +81,7 @@ module DSU3
       request(
         :put,
         "channels/#{channel}/messages/#{message}/reactions/#{emoji}/@me",
-        {params: {location: 'Message'}}
+        { params: { location: 'Message' } }
       )
     end
   end

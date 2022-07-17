@@ -15,7 +15,7 @@ module DSU3
     # (see Bot#type)
     def typespam(channel)
       loop do
-        @bots.each(&:type)
+        @bots.each { |bot| bot.type(channel) }
         sleep 9
       end
     end
