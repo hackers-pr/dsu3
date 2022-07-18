@@ -5,20 +5,21 @@ require 'json'
 require 'uri'
 
 module DSU3
+  # Class representing Discord bot
   class Bot
     API_BASE = 'https://discord.com/api/v9'
 
-    # @param [Hash] headers
-    def initialize(headers)
-      @headers = headers
+    # @param [String] token Discord account token
+    def initialize(token)
+      @headers = Props::HEADERS.merge(authorization: token)
     end
 
-    # Makes an API request, includes simple rate limit handling
+    # Makes an API request without any error handling
     # @param [Symbol, String] method
     # @param [String] endpoint Discord API endpoint
     # @param [Hash] headers Additional request headers
     # @param [String] payload
-    def request(method, endpoint, headers = {}, payload = nil)
+    def raw_request(method, endpoint, headers = {}, payload = nil)
       args = {
         method: method,
         url: URI.join(API_BASE, endpoint).to_s,
@@ -27,20 +28,24 @@ module DSU3
 
       args[:payload] = payload if payload
 
-      begin
-        RestClient::Request.execute(args)
-      rescue RestClient::ExceptionWithResponse => e
-        data = JSON.parse(e.response)
+      RestClient::Request.execute(args)
+    end
 
-        if e.is_a?(RestClient::TooManyRequests)
-          retry_after = data['retry_after'] / 1000.0
+    # Makes an API request, includes simple error handling
+    # @param (see #raw_request)
+    def request(...)
+      raw_request(...)
+    rescue RestClient::ExceptionWithResponse => e
+      data = JSON.parse(e.response)
 
-          LOGGER.warn("rate limit exceeded, waiting #{retry_after} seconds")
-          sleep(retry_after)
-          retry
-        else
-          LOGGER.error("#{data['code']}: #{data['message']}")
-        end
+      if e.is_a?(RestClient::TooManyRequests)
+        retry_after = data['retry_after'] / 1000.0
+
+        LOGGER.warn("rate limit exceeded, waiting #{retry_after} seconds")
+        sleep(retry_after)
+        retry
+      else
+        LOGGER.error("#{data['code']}: #{data['message']}")
       end
     end
 

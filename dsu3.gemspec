@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
     'bug_tracker_uri' => 'https://github.com/hackers-pr/dsu3/issues',
     'wiki_uri' => 'https://www.rubydoc.info/gems/dsu3'
   }
-  s.required_ruby_version = '>= 2.0.0'
+  s.required_ruby_version = '>= 2.7.0'
 
   s.add_runtime_dependency 'rest-client', '~> 2.0'
 end

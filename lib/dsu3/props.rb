@@ -6,8 +6,6 @@ require 'base64'
 
 module DSU3
   module Props
-    module_function
-
     # user-agent header
     USER_AGENT =
       'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '\
@@ -28,7 +26,9 @@ module DSU3
       client_event_source: nil
     }.freeze
 
-    # Main headers
+    resp = RestClient.get('https://discord.com/api/v9/experiments')
+
+    # Headers necessary for normal interaction with the Discord API
     HEADERS = {
       accept: '*/*',
       accept_encoding: 'gzip, deflate, br',
@@ -41,17 +41,9 @@ module DSU3
       x_discord_locale: 'en-US',
       x_super_properties: Base64.strict_encode64(SUPER_PROPERTIES.to_json),
       content_type: 'application/json',
-      origin: 'https://discord.com'
+      origin: 'https://discord.com',
+      cookie: HTTP::Cookie.cookie_value(resp.cookie_jar.cookies),
+      x_fingerprint: JSON.parse(resp.body)['fingerprint']
     }.freeze
-
-    # Gets the headers necessary for normal interaction with the Discord API
-    def headers
-      resp = RestClient.get('https://discord.com/api/v9/experiments')
-
-      {
-        cookie: HTTP::Cookie.cookie_value(resp.cookie_jar.cookies),
-        x_fingerprint: JSON.parse(resp.body)['fingerprint']
-      }.merge(HEADERS)
-    end
   end
 end

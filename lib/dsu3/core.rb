@@ -4,12 +4,11 @@ require 'dsu3/props'
 require 'dsu3/bot'
 
 module DSU3
-  # All DSU3 functionality, used to manage multiple bots
+  # Class used to manage multiple bots
   class Core
     # @param [Array] tokens List of bot tokens
-    def initialize(tokens)
-      headers = Props.headers
-      @bots = tokens.map { |token| Bot.new(headers.merge(authorization: token)) }
+    def initialize(*tokens)
+      @bots = tokens.map(&Bot.method(:new))
     end
 
     # (see Bot#type)
