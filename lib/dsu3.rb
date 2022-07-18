@@ -5,7 +5,7 @@ require 'dsu3/core'
 
 # Main DSU3 namespace
 module DSU3
-  VERSION = '0.3.1'
+  VERSION = '0.4'
 
   LOGGER = Logger.new($stdout)
   LOGGER.level = Logger::WARN
