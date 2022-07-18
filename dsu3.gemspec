@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require './lib/dsu3'
+require './lib/dsu3/version'
 
 Gem::Specification.new do |s|
   s.name = 'dsu3'

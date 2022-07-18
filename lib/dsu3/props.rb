@@ -14,7 +14,7 @@ module DSU3
     DATAMINING_COMMITS_URL = 'https://api.github.com/repos/Discord-Datamining/Discord-Datamining/commits/master'
 
     # Fetches Discord client build number
-    def fetch_build_number
+    def self.fetch_build_number
       JSON.parse(RestClient.get(DATAMINING_COMMITS_URL))['commit']['message'].match(/Build (\d+)/)[1]
     end
 
