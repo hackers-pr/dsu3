@@ -6,7 +6,6 @@ require 'base64'
 
 module DSU3
   # The fundamental class in this vast system, on which all the other parts of the structure depend
-  # pretty bad code in this module rests by the way
   module Props
     # user-agent header
     USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0'

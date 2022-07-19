@@ -10,8 +10,11 @@ module DSU3
     API_BASE = 'https://discord.com/api/v9'
 
     # @param [String] token Discord account token
-    def initialize(token)
+    # @param [Array] proxies List of proxy servers
+    #   If the list of proxy servers is empty, the proxy will not be used
+    def initialize(token, proxies = [])
       @headers = Props::HEADERS.merge(authorization: token)
+      @proxies = proxies
     end
 
     # Makes an API request without any error handling
@@ -20,15 +23,13 @@ module DSU3
     # @param [Hash] headers Additional request headers
     # @param [String] payload
     def raw_request(method, endpoint, headers = {}, payload = nil)
-      args = {
+      RestClient::Request.execute(
         method: method,
         url: URI.join(API_BASE, endpoint).to_s,
-        headers: @headers.merge(headers)
-      }
-
-      args[:payload] = payload if payload
-
-      RestClient::Request.execute(args)
+        headers: @headers.merge(headers),
+        payload: payload,
+        proxy: @proxies.sample
+      )
     end
 
     # Makes an API request, includes simple error handling
@@ -57,7 +58,7 @@ module DSU3
 
     # Sends a message to a specific channel
     # @param [String, Integer] channel Channel ID
-    # @param [String] message
+    # @param [String] message Message ID
     def send_message(channel, message)
       request(
         :post, "channels/#{channel}/messages",

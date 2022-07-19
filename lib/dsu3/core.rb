@@ -7,8 +7,10 @@ module DSU3
   # Class used to manage multiple bots
   class Core
     # @param [Array] tokens List of bot tokens
-    def initialize(*tokens)
-      @bots = tokens.map(&Bot.method(:new))
+    # @param [Array] proxies List of proxy servers
+    #   If the list of proxy servers is empty, the proxy will not be used
+    def initialize(*tokens, proxies = [])
+      @bots = tokens.map { |token| Bot.new(token, proxies) }
     end
 
     # (see Bot#type)
